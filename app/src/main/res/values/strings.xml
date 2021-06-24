@@ -1,0 +1,6 @@
+<resources>
+    <!--    SPLASH SCREEN CONSTANTS-->
+    <string name="app_name">Covar</string>
+    <string name="txt_app_name">COVAR</string>
+    <string name="txt_app_motto">Your Personal Assistant!</string>
+</resources>
