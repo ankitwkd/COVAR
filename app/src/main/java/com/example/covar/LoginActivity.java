@@ -57,7 +57,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginClickListener(View view) {
         Intent dashboardIntent = new Intent(getApplicationContext(), Dashboard.class);
-        startActivity(dashboardIntent);
+
+        Pair[] pairs = new Pair[2];
+        pairs[0] = new Pair<View, String>(image, "logo_image");
+        pairs[1] = new Pair<View, String>(loginButton, "login_signup_transition");
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(dashboardIntent, options.toBundle());
     }
 
     private void hideActionBars() {

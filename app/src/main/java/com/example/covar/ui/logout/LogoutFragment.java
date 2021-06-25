@@ -13,7 +13,6 @@ import com.example.covar.R;
 
 public class LogoutFragment extends Fragment {
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
