@@ -26,5 +26,6 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="signup">Signup</string>
     <string name="domain_name">\@covar.com</string>
+    <string name="pwd_updated">Password updated successfully</string>
 
 </resources>
