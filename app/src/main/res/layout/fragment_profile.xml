@@ -33,7 +33,6 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/mobileNumber"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,6 +41,7 @@
             app:hintTextColor="@color/app_blue">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
@@ -53,7 +53,6 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/age"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +61,7 @@
             app:hintTextColor="@color/app_blue">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"

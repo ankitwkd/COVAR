@@ -121,11 +121,16 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void saveUserDetails() {
-        String username = editUsername.getText().toString();
-        String fullName = editFullName.getText().toString();
-        String age = editAge.getText().toString();
-        String mobileNum = editMobileNum.getText().toString();
-        User user = new User(fullName, age, mobileNum);
-        mDatabase.child("users").child(username).setValue(user);
+        try {
+            String username = editUsername.getText().toString().toLowerCase();
+            String fullName = editFullName.getText().toString();
+            String age = editAge.getText().toString();
+            String mobileNum = editMobileNum.getText().toString();
+            User user = new User(fullName, age, mobileNum);
+            mDatabase.child("users").child(username).setValue(user);
+        } catch (Exception e) {
+            Toast.makeText(context, "Save to DB failed" + e.getMessage(), Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 }
