@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/logoImage">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/old_password"
+            android:id="@+id/vaccine_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:passwordToggleTint="@color/app_orange">
 
             <AutoCompleteTextView
-                android:id="@+id/vaccine_dd"
+                android:id="@+id/vaccine_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
@@ -90,7 +90,7 @@
 
 
         <Button
-            android:id="@+id/changePasswordBtn"
+            android:id="@+id/saveDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -98,6 +98,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/app_orange"
+            android:onClick="saveVaccineDetails"
             android:text="Save"
             android:textColor="@color/white"
             android:transitionName="login_signup_transition"></Button>
@@ -108,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="You'r a Hero!"
+        android:text="You're a Hero!"
         android:textColor="@color/app_orange"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"

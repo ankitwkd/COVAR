@@ -87,6 +87,9 @@ public class SignUp extends AppCompatActivity {
         //Make it a valid email address
         username = username.concat(getString(R.string.domain_name));
         String password = editPassword.getText().toString();
+        if(!saveUserDetails()){
+            return;
+        }
         mAuth.createUserWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -110,7 +113,6 @@ public class SignUp extends AppCompatActivity {
         if(user!=null) {
             Toast.makeText(context, "Sign up successful", Toast.LENGTH_SHORT)
                     .show();
-            saveUserDetails();
             //TODO fill username automatically by passing username here.
             Intent intent = new Intent(context, LoginActivity.class);
             startActivity(intent);
@@ -120,7 +122,7 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    private void saveUserDetails() {
+    private boolean saveUserDetails() {
         try {
             String username = editUsername.getText().toString().toLowerCase();
             String fullName = editFullName.getText().toString();
@@ -128,9 +130,11 @@ public class SignUp extends AppCompatActivity {
             String mobileNum = editMobileNum.getText().toString();
             User user = new User(fullName, age, mobileNum);
             mDatabase.child("users").child(username).setValue(user);
+            return true;
         } catch (Exception e) {
             Toast.makeText(context, "Save to DB failed" + e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
         }
+        return false;
     }
 }

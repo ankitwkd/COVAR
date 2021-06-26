@@ -4,6 +4,33 @@ public class User {
     private String fullName;
     private String age;
     private String mobileNum;
+    private String vaccineName;
+    private String dose;
+    private String vaccinationDate;
+
+    public String getVaccineName() {
+        return vaccineName;
+    }
+
+    public void setVaccineName(String vaccineName) {
+        this.vaccineName = vaccineName;
+    }
+
+    public String getDose() {
+        return dose;
+    }
+
+    public void setDose(String dose) {
+        this.dose = dose;
+    }
+
+    public String getVaccinationDate() {
+        return vaccinationDate;
+    }
+
+    public void setVaccinationDate(String vaccinationDate) {
+        this.vaccinationDate = vaccinationDate;
+    }
 
     public User(){
         //Default constructor
