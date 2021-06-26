@@ -15,14 +15,15 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:src="@drawable/vaccine_splash_logo"
-        android:transitionName="logo_image" />
+        android:transitionName="logo_image"
+        android:contentDescription="@string/vaccine_splash_logo" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
         android:gravity="center"
-        android:text="Welcome"
+        android:text="@string/welcome"
         android:textColor="@color/app_orange"
         android:textSize="40sp"
         android:transitionName="logo_text" />
@@ -40,15 +41,15 @@
         app:layout_constraintTop_toBottomOf="@+id/logo_name">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fullNam3"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Full Name"
+            android:hint="@string/full_name"
             app:boxStrokeColor="@color/app_blue"
             app:hintTextColor="@color/app_blue">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/app_orange">
@@ -57,15 +58,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint="@string/username"
             app:boxStrokeColor="@color/app_blue"
             app:hintTextColor="@color/app_blue">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/app_orange"
@@ -75,17 +76,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="@string/password"
             app:boxStrokeColor="@color/app_blue"
             app:hintTextColor="@color/app_blue"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/app_orange">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
@@ -98,15 +99,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/age"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Age"
+            android:hint="@string/age"
             app:boxStrokeColor="@color/app_blue"
             app:hintTextColor="@color/app_blue">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -117,15 +118,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/mobileNumber"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mobile Number"
+            android:hint="@string/mobile_number"
             app:boxStrokeColor="@color/app_blue"
             app:hintTextColor="@color/app_blue">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -140,7 +141,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/app_orange"
-            android:text="Signup"
-            android:transitionName="login_signup_transition"></Button>
+            android:text="@string/signup"
+            android:onClick="signUp"
+            android:transitionName="login_signup_transition" />
     </LinearLayout>
 </LinearLayout>

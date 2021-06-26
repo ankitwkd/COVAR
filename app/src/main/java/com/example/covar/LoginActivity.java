@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseApp;
 
 public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
