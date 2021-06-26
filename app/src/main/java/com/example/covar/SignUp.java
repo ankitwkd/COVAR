@@ -15,12 +15,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.covar.data.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp extends AppCompatActivity {
     private static final String TAG = "SignUp";
@@ -28,6 +33,9 @@ public class SignUp extends AppCompatActivity {
 
     //Firebase authentication
     private FirebaseAuth mAuth;
+
+    //Firebase database
+    private DatabaseReference mDatabase;
 
     //Sign up fields
     private EditText editFullName, editUsername, editPassword, editAge, editMobileNum;
@@ -51,6 +59,10 @@ public class SignUp extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        //Initialize Firebase database
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
     }
 
     //https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
@@ -87,6 +99,7 @@ public class SignUp extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             updateUI(null);
                         }
                     }
@@ -97,12 +110,22 @@ public class SignUp extends AppCompatActivity {
         if(user!=null) {
             Toast.makeText(context, "Sign up successful", Toast.LENGTH_SHORT)
                     .show();
+            saveUserDetails();
             //TODO fill username automatically by passing username here.
             Intent intent = new Intent(context, LoginActivity.class);
             startActivity(intent);
         }else{
-            Toast.makeText(context, "Sign up failed | Please retry later", Toast.LENGTH_SHORT)
+            Toast.makeText(context, "Sign up failed | Please retry", Toast.LENGTH_SHORT)
                     .show();
         }
+    }
+
+    private void saveUserDetails() {
+        String username = editUsername.getText().toString();
+        String fullName = editFullName.getText().toString();
+        String age = editAge.getText().toString();
+        String mobileNum = editMobileNum.getText().toString();
+        User user = new User(fullName, age, mobileNum);
+        mDatabase.child("users").child(username).setValue(user);
     }
 }
