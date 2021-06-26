@@ -3,27 +3,38 @@ package com.example.covar;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.FirebaseApp;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "Login";
     private Button loginButton;
     private Button signUpButton;
     private ImageView image;
     private TextView welcomeText;
-    private TextInputLayout username, password;
+    private EditText editUsername, editPassword;
+
+    //Firebase authentication
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         wiringUIControls();
         hideActionBars();
         setStatusBarColor();
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
     }
 
     //https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
@@ -51,19 +65,51 @@ public class LoginActivity extends AppCompatActivity {
 
         image = findViewById(R.id.logoImage);
         welcomeText = findViewById(R.id.logo_name);
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
-
+        editUsername = findViewById(R.id.username);
+        editPassword = findViewById(R.id.password);
     }
 
     private void loginClickListener(View view) {
-        Intent dashboardIntent = new Intent(getApplicationContext(), Dashboard.class);
+        String username = editUsername.getText().toString().concat(getString(R.string.domain_name));
+        String password = editPassword.getText().toString();
+        validateLogin(username,password);
+    }
 
-        Pair[] pairs = new Pair[2];
-        pairs[0] = new Pair<View, String>(image, "logo_image");
-        pairs[1] = new Pair<View, String>(loginButton, "login_signup_transition");
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
-        startActivity(dashboardIntent, options.toBundle());
+    private void validateLogin(String username, String password) {
+        mAuth.signInWithEmailAndPassword(username, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private void updateUI(FirebaseUser user) {
+        if(user!=null) {
+            Toast.makeText(this, "Log in successful", Toast.LENGTH_SHORT)
+                    .show();
+            Intent dashboardIntent = new Intent(getApplicationContext(), Dashboard.class);
+
+            Pair[] pairs = new Pair[2];
+            pairs[0] = new Pair<View, String>(image, "logo_image");
+            pairs[1] = new Pair<View, String>(loginButton, "login_signup_transition");
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+            startActivity(dashboardIntent, options.toBundle());
+        }else{
+            Toast.makeText(this, "Authentication failed | Incorrect credentials", Toast.LENGTH_SHORT)
+                    .show();
+            editPassword.getText().clear();
+        }
     }
 
     private void hideActionBars() {
@@ -77,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
         Pair[] pairs = new Pair[5];
         pairs[0] = new Pair<View, String>(image, "logo_image");
         pairs[1] = new Pair<View, String>(welcomeText, "logo_text");
-        pairs[2] = new Pair<View, String>(username, "username_transition");
-        pairs[3] = new Pair<View, String>(password, "password_transition");
+        pairs[2] = new Pair<View, String>(editUsername, "username_transition");
+        pairs[3] = new Pair<View, String>(editPassword, "password_transition");
         pairs[4] = new Pair<View, String>(loginButton, "login_signup_transition");
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
         startActivity(signUpIntent, options.toBundle());

@@ -73,7 +73,7 @@ public class SignUp extends AppCompatActivity {
         }*/
         String username = editUsername.getText().toString();
         //Make it a valid email address
-        username = username.concat("@covar.com");
+        username = username.concat(getString(R.string.domain_name));
         String password = editPassword.getText().toString();
         mAuth.createUserWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

@@ -25,5 +25,6 @@
     <string name="age">Age</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="signup">Signup</string>
+    <string name="domain_name">\@covar.com</string>
 
 </resources>
