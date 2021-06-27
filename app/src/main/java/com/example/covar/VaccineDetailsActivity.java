@@ -1,5 +1,12 @@
 package com.example.covar;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,7 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.covar.data.User;
+import com.example.covar.utils.ReminderBroadcast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -26,7 +33,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class VaccineDetailsActivity extends AppCompatActivity {
 
@@ -44,6 +54,8 @@ public class VaccineDetailsActivity extends AppCompatActivity {
 
     FirebaseUser currUser;
     User user;
+
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,16 +136,16 @@ public class VaccineDetailsActivity extends AppCompatActivity {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             try {
                                 user = task.getResult().getValue(User.class);
-                                if(user.getVaccineName()!=null){
-                                    vaccineDropdown.setText(user.getVaccineName(), false);
-                                }
-                                if(user.getDose()!=null){
-                                    doseDropdown.setText(user.getDose(), false);
-                                }
-                                if(user.getVaccinationDate()!=null){
-                                    dateLayout.setText(user.getVaccinationDate());
-                                }
-                                Toast.makeText(VaccineDetailsActivity.this, "Old data loaded", Toast.LENGTH_SHORT).show();
+//                                if(user.getVaccineName()!=null){
+//                                    vaccineDropdown.setText(user.getVaccineName(), false);
+//                                }
+//                                if(user.getDose()!=null){
+//                                    doseDropdown.setText(user.getDose(), false);
+//                                }
+//                                if(user.getVaccinationDate()!=null){
+//                                    dateLayout.setText(user.getVaccinationDate());
+//                                }
+//                                Toast.makeText(VaccineDetailsActivity.this, "Old data loaded", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Toast.makeText(VaccineDetailsActivity.this, "Fetching old data failed" + e.getMessage(), Toast.LENGTH_SHORT)
                                         .show();
@@ -148,7 +160,12 @@ public class VaccineDetailsActivity extends AppCompatActivity {
             String username = currUser.getEmail().split("@")[0];
             user.setVaccineName(vaccineDropdown.getText().toString());
             user.setDose(doseDropdown.getText().toString());
-            user.setVaccinationDate(dateLayout.getText().toString());
+            if(user.getDose().equalsIgnoreCase("1")) {
+                user.setVaccinationDate1(dateLayout.getText().toString());
+                setReminder(user.getVaccinationDate1());
+            }else if(user.getDose().equalsIgnoreCase("2")){
+                user.setVaccinationDate2(dateLayout.getText().toString());
+            }
             mDatabase.child("users").child(username).setValue(user);
             Toast.makeText(VaccineDetailsActivity.this, "Saved successfully", Toast.LENGTH_SHORT)
                     .show();
@@ -156,6 +173,64 @@ public class VaccineDetailsActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(VaccineDetailsActivity.this, "Save to DB failed" + e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
+        }
+    }
+
+    private void setReminder(String vaccinationDate1) {
+        try {
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date(vaccinationDate1));
+            c.add(Calendar.DATE, 30);
+            String vaccineDate2 = new SimpleDateFormat("d MMMM yyyy").format(c.getTime());
+            createNotificationChannel();
+            Intent intent = new Intent(this, ReminderBroadcast.class);
+            intent.putExtra("vaccineDate2", vaccineDate2);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            AlarmManager alarmManager = (AlarmManager)getSystemService(this.ALARM_SERVICE);
+
+            long timeAtButtonClick = System.currentTimeMillis();
+
+            long tenSecondsInMillis = 1000 * 10;
+
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, pendingIntent);
+            Toast.makeText(this, "Reminder created", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not create reminder | " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void createNotificationChannel(){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "ReminderChannel";
+            String description = "Hello channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyAnkit", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+
+                // after requesting permissions we are showing
+                // users a toast message of permission granted.
+                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (writeStorage && readStorage) {
+                    Toast.makeText(this, "Permission Granted..", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }

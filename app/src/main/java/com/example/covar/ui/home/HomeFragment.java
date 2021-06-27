@@ -19,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.covar.Dashboard;
 import com.example.covar.R;
 import com.example.covar.VaccineDetailsActivity;
 import com.example.covar.data.User;
@@ -34,7 +33,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class HomeFragment extends Fragment {
 
@@ -54,7 +55,6 @@ public class HomeFragment extends Fragment {
 
     private User user;
 
-    private static final int PERMISSION_REQUEST_CODE = 200;
 
 
 
@@ -72,7 +72,6 @@ public class HomeFragment extends Fragment {
         currUser = mAuth.getCurrentUser();
 
         download.setOnClickListener(this :: downloadAsPDF);
-        reminder.setOnClickListener(this :: setReminder);
         return root;
     }
 
@@ -87,7 +86,6 @@ public class HomeFragment extends Fragment {
         fillUpButton.setOnClickListener(this::fillUpOnClickListener);
         tvHome = view.findViewById(R.id.txt_home);
         download = view.findViewById(R.id.download);
-        reminder = view.findViewById(R.id.setReminder);
     }
 
     private void downloadAsPDF(View view) {
@@ -104,38 +102,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void setReminder(View view) {
-        try {
-            createNotificationChannel();
-            Intent intent = new Intent(getActivity(), ReminderBroadcast.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-
-            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
-
-            long timeAtButtonClick = System.currentTimeMillis();
-
-            long tenSecondsInMillis = 1000 * 10;
-
-            alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, pendingIntent);
-            Toast.makeText(getActivity(), "Reminder created", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Could not create reminder | " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void createNotificationChannel(){
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "ReminderChannel";
-            String description = "Hello channel";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("notifyAnkit", name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     private void collectData() {
         String username = currUser.getEmail().split("@")[0];
@@ -152,16 +118,32 @@ public class HomeFragment extends Fragment {
                         else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             user = task.getResult().getValue(User.class);
-                            String display_text = user.getFullName() + "\n" + user.getAge() + "\n"
-                                    + user.getMobileNum() + '\n';
-                            if(user.getVaccineName()!=null){
-                                display_text += user.getVaccineName() + "\n";
+
+                            String display_text = "";
+                            Date vaccineDate1 = null, vaccineDate2 = null;
+                            if(user.getVaccinationDate1()!=null) {
+                                vaccineDate1 = new Date(user.getVaccinationDate1());
                             }
-                            if(user.getDose()!=null){
-                                display_text += user.getDose() + " dose(s)\n";
+                            if(user.getVaccinationDate2()!=null) {
+                                vaccineDate2 = new Date(user.getVaccinationDate2());
                             }
-                            if(user.getVaccinationDate()!=null){
-                                display_text += user.getVaccinationDate() + "\n";
+
+                            if(vaccineDate1 != null && vaccineDate2 == null) {
+                                display_text += "You took your first dose on ";
+                                display_text += user.getVaccinationDate1() + "\n";
+                                display_text += "Your tentative date for second dose is on ";
+                                Calendar c = Calendar.getInstance();
+                                c.setTime(vaccineDate1);
+                                c.add(Calendar.DATE, 30);
+                                display_text += new SimpleDateFormat("d MMMM yyyy").format(c.getTime()) + "\n";
+                            }else if(vaccineDate1 != null && vaccineDate2 != null){
+                                display_text += "You took your first dose on ";
+                                display_text += user.getVaccinationDate1() + "\n";
+                                display_text += "You took your second dose on ";
+                                display_text += user.getVaccinationDate2() + "\n";
+                                fillUpButton.setVisibility(View.GONE);
+                            }else if(vaccineDate1 == null && vaccineDate2 == null){
+                                display_text += "As per records, you have not taken vaccine. Please fill the form.";
                             }
                             tvHome.setText(display_text);
                         }
@@ -174,25 +156,6 @@ public class HomeFragment extends Fragment {
         Intent vaccineActivity = new Intent(getActivity(), VaccineDetailsActivity.class);
         startActivity(vaccineActivity);
 
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0) {
-
-                // after requesting permissions we are showing
-                // users a toast message of permission granted.
-                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                if (writeStorage && readStorage) {
-                    Toast.makeText(getActivity(), "Permission Granted..", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Permission Denied.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
     }
 
 }

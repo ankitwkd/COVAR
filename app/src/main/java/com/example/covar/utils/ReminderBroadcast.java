@@ -12,10 +12,11 @@ import com.example.covar.R;
 public class ReminderBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        String vaccineDate2 = intent.getStringExtra("vaccineDate2");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "notifyAnkit")
                 .setSmallIcon(R.drawable.vaccine_splash_logo)
                 .setContentTitle("Vaccine 2nd dose reminder")
-                .setContentText("This is a gentle reminder. ")
+                .setContentText("Your 2nd dose is due on " + vaccineDate2)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);

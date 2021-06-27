@@ -6,7 +6,9 @@ public class User {
     private String mobileNum;
     private String vaccineName;
     private String dose;
-    private String vaccinationDate;
+    private String vaccinationDate1;
+
+    private String vaccinationDate2;
 
     public String getVaccineName() {
         return vaccineName;
@@ -24,12 +26,12 @@ public class User {
         this.dose = dose;
     }
 
-    public String getVaccinationDate() {
-        return vaccinationDate;
+    public String getVaccinationDate1() {
+        return vaccinationDate1;
     }
 
-    public void setVaccinationDate(String vaccinationDate) {
-        this.vaccinationDate = vaccinationDate;
+    public void setVaccinationDate1(String vaccinationDate1) {
+        this.vaccinationDate1 = vaccinationDate1;
     }
 
     public User(){
@@ -64,5 +66,13 @@ public class User {
 
     public void setMobileNum(String mobileNum) {
         this.mobileNum = mobileNum;
+    }
+
+    public String getVaccinationDate2() {
+        return vaccinationDate2;
+    }
+
+    public void setVaccinationDate2(String vaccinationDate2) {
+        this.vaccinationDate2 = vaccinationDate2;
     }
 }

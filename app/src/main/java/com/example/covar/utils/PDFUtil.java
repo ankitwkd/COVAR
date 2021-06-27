@@ -9,13 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
-import android.os.Bundle;
 import android.os.Environment;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -125,8 +120,8 @@ public class PDFUtil{
         if(user.getDose()!=null){
             canvas.drawText(user.getDose(), 396, 640, title);
         }
-        if(user.getVaccinationDate()!=null) {
-            canvas.drawText(user.getVaccinationDate(), 396, 660, title);
+        if(user.getVaccinationDate1()!=null) {
+            canvas.drawText(user.getVaccinationDate1(), 396, 660, title);
         }
 
         // similarly we are creating another text and in this
