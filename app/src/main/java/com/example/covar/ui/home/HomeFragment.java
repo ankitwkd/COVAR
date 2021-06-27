@@ -70,11 +70,16 @@ public class HomeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         currUser = mAuth.getCurrentUser();
-        collectData();
 
         download.setOnClickListener(this :: downloadAsPDF);
         reminder.setOnClickListener(this :: setReminder);
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        collectData();
     }
 
     private void wireUI(View view) {

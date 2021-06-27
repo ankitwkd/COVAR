@@ -119,9 +119,15 @@ public class PDFUtil{
         canvas.drawText(user.getFullName(), 396, 560, title);
         canvas.drawText(user.getAge(), 396, 580, title);
         canvas.drawText(user.getMobileNum(), 396, 600, title);
-        canvas.drawText(user.getVaccineName(), 396, 620, title);
-        canvas.drawText(user.getDose(), 396, 640, title);
-        canvas.drawText(user.getVaccinationDate(), 396, 660, title);
+        if(user.getVaccineName()!=null) {
+            canvas.drawText(user.getVaccineName(), 396, 620, title);
+        }
+        if(user.getDose()!=null){
+            canvas.drawText(user.getDose(), 396, 640, title);
+        }
+        if(user.getVaccinationDate()!=null) {
+            canvas.drawText(user.getVaccinationDate(), 396, 660, title);
+        }
 
         // similarly we are creating another text and in this
         // we are aligning this text to center of our PDF file.
