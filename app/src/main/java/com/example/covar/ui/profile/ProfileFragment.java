@@ -41,6 +41,7 @@ public class ProfileFragment extends Fragment {
 
     private Validator validator;
     private TextInputLayout mobileNumLayout;
+    private TextInputLayout ageLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +57,8 @@ public class ProfileFragment extends Fragment {
         currUser = mAuth.getCurrentUser();
 
         validator = new Validator(getActivity());
-        validator.addValidation(mobileNumLayout, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: ###-###-####");
+        validator.addValidation(mobileNumLayout, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: 000-000-0000");
+        validator.addValidation(ageLayout, "^(?:[1-9][0-9]?|1[01][0-9]|120)$", "Age(1-120)");
 
         fillOldData();
 
@@ -92,6 +94,7 @@ public class ProfileFragment extends Fragment {
         btnUpdateProf = root.findViewById(R.id.changeProfileBtn);
 
         mobileNumLayout = root.findViewById(R.id.mobileNumberLayout);
+        ageLayout = root.findViewById(R.id.ageLayout);
 
         btnUpdateProf.setOnClickListener(this::updateProfile);
     }

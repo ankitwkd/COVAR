@@ -1,6 +1,7 @@
 package com.example.covar.utils;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -42,12 +44,14 @@ public class PDFUtil{
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
+    private String pdfText;
 
     public PDFUtil(Resources resources,
-                   int image_id, User user, int blue, Context context) {
+                   int image_id, User user, int blue, Context context, String pdfText) {
         this.user = user;
         this.blue = blue;
         this.context = context;
+        this.pdfText = pdfText;
         // initializing our variables.
 
         bmp = BitmapFactory.decodeResource(resources, image_id);
@@ -92,7 +96,7 @@ public class PDFUtil{
         // second parameter is position from left
         // third parameter is position from top and last
         // one is our variable for paint.
-        canvas.drawBitmap(scaledbmp, 396, 40, paint);
+        canvas.drawBitmap(scaledbmp, 350, 40, paint);
 
         // below line is used for adding typeface for
         // our text which we will be adding in our PDF file.
@@ -114,15 +118,8 @@ public class PDFUtil{
         canvas.drawText(user.getFullName(), 396, 560, title);
         canvas.drawText(user.getAge(), 396, 580, title);
         canvas.drawText(user.getMobileNum(), 396, 600, title);
-        if(user.getVaccineName()!=null) {
-            canvas.drawText(user.getVaccineName(), 396, 620, title);
-        }
-        if(user.getDose()!=null){
-            canvas.drawText(user.getDose(), 396, 640, title);
-        }
-        if(user.getVaccinationDate1()!=null) {
-            canvas.drawText(user.getVaccinationDate1(), 396, 660, title);
-        }
+
+        canvas.drawText(pdfText, 396, 620, title);
 
         // similarly we are creating another text and in this
         // we are aligning this text to center of our PDF file.
@@ -142,8 +139,12 @@ public class PDFUtil{
         // below line is used to set the name of
         // our PDF file and its path.
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        ContextWrapper cw = new ContextWrapper(context);
+        File directory = cw.getExternalFilesDir(null);
+        //creating new folder instance
+        File file = new File(directory
 , "VaccineDetails"+timestamp+".pdf");
+        Toast.makeText(context, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
         try {
             // after creating a file name we will

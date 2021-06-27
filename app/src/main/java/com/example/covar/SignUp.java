@@ -80,7 +80,8 @@ public class SignUp extends AppCompatActivity {
         validator.addValidation(layoutFullName, "[a-zA-Z\\s]+", "Only letters and spaces allowed");
         validator.addValidation(layoutUsername, "[A-Za-z0-9]+", "Only letters and numbers allowed");
         validator.addValidation(layoutPassword, getString(R.string.regex_password), getString(R.string.err_invalid_password));
-        validator.addValidation(layoutMobileNum, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: ###-###-####");
+        validator.addValidation(layoutMobileNum, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: 000-000-0000");
+        validator.addValidation(layoutAge, "^(?:[1-9][0-9]?|1[01][0-9]|120)$", "Age(1-120)");
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

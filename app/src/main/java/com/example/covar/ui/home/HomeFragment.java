@@ -55,6 +55,8 @@ public class HomeFragment extends Fragment {
 
     private User user;
 
+    private String pdfText;
+
 
 
 
@@ -89,7 +91,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void downloadAsPDF(View view) {
-        PDFUtil pdfUtil = new PDFUtil(getResources(), R.drawable.vaccine_splash_logo, user, R.color.app_blue, getActivity());
+        PDFUtil pdfUtil = new PDFUtil(getResources(), R.drawable.vaccine_splash_logo, user, R.color.app_blue, getActivity(), pdfText);
         if (pdfUtil.checkPermission()) {
             Toast.makeText(getActivity(), "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
@@ -145,6 +147,7 @@ public class HomeFragment extends Fragment {
                             }else if(vaccineDate1 == null && vaccineDate2 == null){
                                 display_text += "As per records, you have not taken vaccine. Please fill the form.";
                             }
+                            pdfText = display_text;
                             tvHome.setText(display_text);
                         }
                     }

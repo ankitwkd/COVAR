@@ -136,16 +136,7 @@ public class VaccineDetailsActivity extends AppCompatActivity {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             try {
                                 user = task.getResult().getValue(User.class);
-//                                if(user.getVaccineName()!=null){
-//                                    vaccineDropdown.setText(user.getVaccineName(), false);
-//                                }
-//                                if(user.getDose()!=null){
-//                                    doseDropdown.setText(user.getDose(), false);
-//                                }
-//                                if(user.getVaccinationDate()!=null){
-//                                    dateLayout.setText(user.getVaccinationDate());
-//                                }
-//                                Toast.makeText(VaccineDetailsActivity.this, "Old data loaded", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(VaccineDetailsActivity.this, "Old data loaded", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Toast.makeText(VaccineDetailsActivity.this, "Fetching old data failed" + e.getMessage(), Toast.LENGTH_SHORT)
                                         .show();
