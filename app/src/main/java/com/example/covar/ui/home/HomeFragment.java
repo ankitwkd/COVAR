@@ -1,7 +1,12 @@
 package com.example.covar.ui.home;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +19,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.covar.Dashboard;
 import com.example.covar.R;
 import com.example.covar.VaccineDetailsActivity;
 import com.example.covar.data.User;
 import com.example.covar.utils.PDFUtil;
+import com.example.covar.utils.ReminderBroadcast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,10 +34,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 public class HomeFragment extends Fragment {
 
     private Button fillUpButton;
     private FloatingActionButton download;
+    private FloatingActionButton reminder;
     private TextView tvHome;
 
     //Firebase database
@@ -63,7 +73,16 @@ public class HomeFragment extends Fragment {
         collectData();
 
         download.setOnClickListener(this :: downloadAsPDF);
+        reminder.setOnClickListener(this :: setReminder);
         return root;
+    }
+
+    private void wireUI(View view) {
+        fillUpButton = view.findViewById(R.id.btn_home_fileup);
+        fillUpButton.setOnClickListener(this::fillUpOnClickListener);
+        tvHome = view.findViewById(R.id.txt_home);
+        download = view.findViewById(R.id.download);
+        reminder = view.findViewById(R.id.setReminder);
     }
 
     private void downloadAsPDF(View view) {
@@ -74,9 +93,42 @@ public class HomeFragment extends Fragment {
             pdfUtil.requestPermission();
         }
         if(pdfUtil.generatePDF()){
-            Toast.makeText(getActivity(), "PDF file generated succesfully.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "PDF file saved to Downloads", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(getActivity(), "Could not generate pdf file", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setReminder(View view) {
+        try {
+            createNotificationChannel();
+            Intent intent = new Intent(getActivity(), ReminderBroadcast.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+
+            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+
+            long timeAtButtonClick = System.currentTimeMillis();
+
+            long tenSecondsInMillis = 1000 * 10;
+
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, pendingIntent);
+            Toast.makeText(getActivity(), "Reminder created", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Could not create reminder | " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void createNotificationChannel(){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "ReminderChannel";
+            String description = "Hello channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyAnkit", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 
@@ -111,13 +163,6 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-    }
-
-    private void wireUI(View view) {
-        fillUpButton = view.findViewById(R.id.btn_home_fileup);
-        fillUpButton.setOnClickListener(this::fillUpOnClickListener);
-        tvHome = view.findViewById(R.id.txt_home);
-        download = view.findViewById(R.id.download);
     }
 
     private void fillUpOnClickListener(View view) {
