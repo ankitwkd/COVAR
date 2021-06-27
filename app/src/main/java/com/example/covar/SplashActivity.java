@@ -15,6 +15,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class SplashActivity extends AppCompatActivity {
 
     private Animation topAnim, bottomAnim;
@@ -53,9 +56,16 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void navigateToNewActivity() {
+        Intent intent;
+        // Initialize Firebase Auth
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user!=null){
+            intent = new Intent(getApplicationContext(), Dashboard.class);
+        }else{
+            intent = new Intent(getApplicationContext(), LoginActivity.class);
+        }
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-
             Pair[] pairs = new Pair[2];
             pairs[0] = new Pair<View, String>(splashIcon, "logo_image");
             pairs[1] = new Pair<View, String>(txtAppName, "logo_text");

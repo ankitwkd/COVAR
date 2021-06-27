@@ -15,9 +15,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.example.covar.data.User;
+import com.example.covar.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.common.collect.Range;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -40,6 +44,12 @@ public class SignUp extends AppCompatActivity {
     //Sign up fields
     private EditText editFullName, editUsername, editPassword, editAge, editMobileNum;
 
+    //Text input layouts
+    private TextInputLayout layoutFullName, layoutUsername, layoutPassword, layoutAge,
+            layoutMobileNum;
+
+    private Validator validator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +66,21 @@ public class SignUp extends AppCompatActivity {
         editPassword = findViewById(R.id.password);
         editAge = findViewById(R.id.age);
         editMobileNum = findViewById(R.id.mobileNumber);
+
+        //Initialize layouts
+        layoutFullName  = findViewById(R.id.fullNameLayout);
+        layoutUsername  = findViewById(R.id.usernameLayout);
+        layoutPassword  = findViewById(R.id.passwordLayout);
+        layoutAge       = findViewById(R.id.ageLayout);
+        layoutMobileNum = findViewById(R.id.mobileNumberLayout);
+
+        //Adding validators
+        validator = new Validator(this);
+        //validator.setStyle(R.style.orangeError);
+        validator.addValidation(layoutFullName, "[a-zA-Z\\s]+", "Only letters and spaces allowed");
+        validator.addValidation(layoutUsername, "[A-Za-z0-9]+", "Only letters and numbers allowed");
+        validator.addValidation(layoutPassword, getString(R.string.regex_password), getString(R.string.err_invalid_password));
+        validator.addValidation(layoutMobileNum, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: ###-###-####");
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -79,10 +104,11 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void signUp(View view) {
-        //TODO validation
-        /*if(!isValid()){
+        if(!validator.validate()){
+            Toast.makeText(this, "Please fix highlighted errors", Toast.LENGTH_SHORT).show();
             return;
-        }*/
+        }
+
         String username = editUsername.getText().toString();
         //Make it a valid email address
         username = username.concat(getString(R.string.domain_name));

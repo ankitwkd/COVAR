@@ -14,8 +14,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.covar.R;
 import com.example.covar.data.User;
+import com.example.covar.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +39,9 @@ public class ProfileFragment extends Fragment {
 
     private User user;
 
+    private Validator validator;
+    private TextInputLayout mobileNumLayout;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -49,6 +54,9 @@ public class ProfileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         currUser = mAuth.getCurrentUser();
+
+        validator = new Validator(getActivity());
+        validator.addValidation(mobileNumLayout, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: ###-###-####");
 
         fillOldData();
 
@@ -83,11 +91,16 @@ public class ProfileFragment extends Fragment {
         editAge = root.findViewById(R.id.age);
         btnUpdateProf = root.findViewById(R.id.changeProfileBtn);
 
+        mobileNumLayout = root.findViewById(R.id.mobileNumberLayout);
+
         btnUpdateProf.setOnClickListener(this::updateProfile);
     }
 
     private void updateProfile(View view) {
         try {
+            if(!validator.validate()){
+                return;
+            }
             String newMobileNum = editMobileNum.getText().toString();
             String newAge = editAge.getText().toString();
             String username = currUser.getEmail().split("@")[0];

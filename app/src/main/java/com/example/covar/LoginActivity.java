@@ -39,14 +39,22 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
         setContentView(R.layout.activity_login);
 
         wiringUIControls();
         hideActionBars();
         setStatusBarColor();
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     //https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
@@ -98,18 +106,22 @@ public class LoginActivity extends AppCompatActivity {
         if(user!=null) {
             Toast.makeText(this, "Log in successful", Toast.LENGTH_SHORT)
                     .show();
-            Intent dashboardIntent = new Intent(getApplicationContext(), Dashboard.class);
-
-            Pair[] pairs = new Pair[2];
-            pairs[0] = new Pair<View, String>(image, "logo_image");
-            pairs[1] = new Pair<View, String>(loginButton, "login_signup_transition");
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
-            startActivity(dashboardIntent, options.toBundle());
+            navigateNext();
         }else{
             Toast.makeText(this, "Authentication failed | Incorrect credentials", Toast.LENGTH_SHORT)
                     .show();
             editPassword.getText().clear();
         }
+    }
+
+    private void navigateNext() {
+        Intent dashboardIntent = new Intent(getApplicationContext(), Dashboard.class);
+
+        Pair[] pairs = new Pair[2];
+        pairs[0] = new Pair<View, String>(image, "logo_image");
+        pairs[1] = new Pair<View, String>(loginButton, "login_signup_transition");
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
+        startActivity(dashboardIntent, options.toBundle());
     }
 
     private void hideActionBars() {

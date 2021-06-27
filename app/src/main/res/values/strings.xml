@@ -28,4 +28,9 @@
     <string name="domain_name">\@covar.com</string>
     <string name="pwd_updated">Password updated successfully</string>
 
+    <!--validation-->
+    <string name="err_invalid_password">Invalid password(Min 8, Max 20. Must contain at least 1 lowercase, 1 uppercase, 1 special character, 1 digit)</string>
+    <string name="regex_password"><![CDATA[^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$]]></string>
+
+
 </resources>
