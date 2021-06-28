@@ -1,29 +1,25 @@
 package com.example.covar.ui.home;
 
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.covar.R;
 import com.example.covar.VaccineDetailsActivity;
 import com.example.covar.data.User;
 import com.example.covar.utils.PDFUtil;
-import com.example.covar.utils.ReminderBroadcast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,6 +39,10 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton download;
     private FloatingActionButton reminder;
     private TextView tvHome;
+
+    private TextView fullName, msg, firstDose, secondDose;
+    private ProgressBar progressBar;
+    private CardView cardView;
 
     //Firebase database
     private DatabaseReference mDatabase;
@@ -86,8 +86,14 @@ public class HomeFragment extends Fragment {
     private void wireUI(View view) {
         fillUpButton = view.findViewById(R.id.btn_home_fileup);
         fillUpButton.setOnClickListener(this::fillUpOnClickListener);
-        tvHome = view.findViewById(R.id.txt_home);
+        tvHome = view.findViewById(R.id.welcomeUser);
         download = view.findViewById(R.id.download);
+        fullName = view.findViewById(R.id.cardfullname);
+        msg = view.findViewById(R.id.msg);
+        firstDose = view.findViewById(R.id.firstdose);
+        secondDose = view.findViewById(R.id.seconddose);
+        progressBar = view.findViewById(R.id.pBar);
+        cardView = view.findViewById(R.id.card_view);
     }
 
     private void downloadAsPDF(View view) {
@@ -107,6 +113,8 @@ public class HomeFragment extends Fragment {
 
     private void collectData() {
         String username = currUser.getEmail().split("@")[0];
+        cardView.setVisibility(getView().GONE);
+        //progressBar.setVisibility(getView().VISIBLE);
         mDatabase.child("users").child(username).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
@@ -120,7 +128,9 @@ public class HomeFragment extends Fragment {
                         else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             user = task.getResult().getValue(User.class);
-
+                            fullName.setText(user.getFullName().toUpperCase());
+                            firstDose.setText("1st dose received:  NA");
+                            secondDose.setText("2nd dose received: NA");
                             String display_text = "";
                             Date vaccineDate1 = null, vaccineDate2 = null;
                             if(user.getVaccinationDate1()!=null) {
@@ -133,22 +143,30 @@ public class HomeFragment extends Fragment {
                             if(vaccineDate1 != null && vaccineDate2 == null) {
                                 display_text += "You took your first dose on ";
                                 display_text += user.getVaccinationDate1() + "\n";
+                                firstDose.setText("1st dose received: " + user.getVaccinationDate1());
                                 display_text += "Your tentative date for second dose is on ";
                                 Calendar c = Calendar.getInstance();
                                 c.setTime(vaccineDate1);
                                 c.add(Calendar.DATE, 30);
                                 display_text += new SimpleDateFormat("d MMMM yyyy").format(c.getTime()) + "\n";
+                                secondDose.setText("Tentative second dose date: " + new SimpleDateFormat("d MMMM yyyy").format(c.getTime()));
+                                msg.setText("Thank you for completing your COVID-19 vaccine.\nYour second dose is still due.");
                             }else if(vaccineDate1 != null && vaccineDate2 != null){
                                 display_text += "You took your first dose on ";
                                 display_text += user.getVaccinationDate1() + "\n";
+                                firstDose.setText("1st dose received: " + user.getVaccinationDate1());
                                 display_text += "You took your second dose on ";
                                 display_text += user.getVaccinationDate2() + "\n";
+                                secondDose.setText("2nd dose received: " + user.getVaccinationDate2());
+                                msg.setText("Thank you for completing your COVID-19 vaccine.");
                                 fillUpButton.setVisibility(View.GONE);
                             }else if(vaccineDate1 == null && vaccineDate2 == null){
-                                display_text += "As per records, you have not taken vaccine. Please fill the form.";
+                                display_text += "As per records, you have not taken vaccine.\nPlease fill the form.";
+                                msg.setText(display_text);
                             }
                             pdfText = display_text;
-                            tvHome.setText(display_text);
+                            cardView.setVisibility(getView().VISIBLE);
+                            //tvHome.setText(display_text);
                         }
                     }
                 });
