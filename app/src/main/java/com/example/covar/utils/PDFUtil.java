@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -44,10 +45,10 @@ public class PDFUtil{
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
-    private String pdfText;
+    private ArrayList<String> pdfText;
 
     public PDFUtil(Resources resources,
-                   int image_id, User user, int blue, Context context, String pdfText) {
+                   int image_id, User user, int blue, Context context, ArrayList<String> pdfText) {
         this.user = user;
         this.blue = blue;
         this.context = context;
@@ -86,9 +87,11 @@ public class PDFUtil{
         // from our page of PDF.
         Canvas canvas = myPage.getCanvas();
 
+        int xPos = 325;
+
         // below line is used for setting
         // our text to center of PDF.
-        title.setTextAlign(Paint.Align.CENTER);
+        title.setTextAlign(Paint.Align.LEFT);
 
         // below line is used to draw our image on our PDF file.
         // the first parameter of our drawbitmap method is
@@ -96,11 +99,11 @@ public class PDFUtil{
         // second parameter is position from left
         // third parameter is position from top and last
         // one is our variable for paint.
-        canvas.drawBitmap(scaledbmp, 350, 40, paint);
+        canvas.drawBitmap(scaledbmp, xPos, 40, paint);
 
         // below line is used for adding typeface for
         // our text which we will be adding in our PDF file.
-        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
         // below line is used for setting text size
         // which we will be displaying in our PDF file.
@@ -115,22 +118,29 @@ public class PDFUtil{
         // the first parameter is our text, second parameter
         // is position from start, third parameter is position from top
         // and then we are passing our variable of paint which is title.
-        canvas.drawText(user.getFullName(), 396, 560, title);
-        canvas.drawText(user.getAge(), 396, 580, title);
-        canvas.drawText(user.getMobileNum(), 396, 600, title);
+        canvas.drawText("Name: " + user.getFullName(), xPos, 560, title);
 
-        canvas.drawText(pdfText, 396, 620, title);
+
+
+        canvas.drawText("Age: " + user.getAge(), xPos, 580, title);
+        canvas.drawText("Mobile: " + user.getMobileNum(), xPos, 600, title);
+
+        canvas.drawText(pdfText.get(1), xPos, 640, title);
+
+        canvas.drawText(pdfText.get(2), xPos, 680, title);
+
+        canvas.drawText(pdfText.get(3), xPos, 700, title);
 
         // similarly we are creating another text and in this
         // we are aligning this text to center of our PDF file.
-        title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+        title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         title.setColor(blue);
         title.setTextSize(15);
 
         // below line is used for setting
         // our text to center of PDF.
         title.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("COVAR APP", 600, 1000, title);
+        canvas.drawText("© COVAR APP", 600, 1000, title);
 
         // after adding all attributes to our
         // PDF file we will be finishing our page.
