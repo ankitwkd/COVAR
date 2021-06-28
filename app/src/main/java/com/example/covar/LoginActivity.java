@@ -80,6 +80,11 @@ public class LoginActivity extends AppCompatActivity {
     private void loginClickListener(View view) {
         String username = editUsername.getText().toString().concat(getString(R.string.domain_name));
         String password = editPassword.getText().toString();
+        if(username.isEmpty() || password.isEmpty()){
+            Toast.makeText(this, "Username and password fields cannot be empty",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         validateLogin(username,password);
     }
 
