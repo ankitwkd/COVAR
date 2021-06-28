@@ -44,6 +44,8 @@ public class VaccineDetailsActivity extends AppCompatActivity {
     ArrayList<String> vaccineNames = new ArrayList<>();
     private AutoCompleteTextView doseDropdown;
     ArrayList<String> doses = new ArrayList<>();
+    ArrayAdapter<String> dosesArrayAdapter;
+
     private TextInputEditText dateLayout;
 
     //Firebase database
@@ -87,8 +89,7 @@ public class VaccineDetailsActivity extends AppCompatActivity {
         //DOSES
         doseDropdown = findViewById(R.id.doses_dd);
         doses.add("1");
-        doses.add("2");
-        ArrayAdapter<String> dosesArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, doses);
+        dosesArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, doses);
         doseDropdown.setAdapter(dosesArrayAdapter);
         //VACCINE DATE
         MaterialDatePicker datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("VACCINATION DATE").build();
@@ -136,6 +137,11 @@ public class VaccineDetailsActivity extends AppCompatActivity {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             try {
                                 user = task.getResult().getValue(User.class);
+                                if(user.getVaccinationDate1()!=null){
+                                    dosesArrayAdapter.remove("1");
+                                    dosesArrayAdapter.add("2");
+                                    doseDropdown.setAdapter(dosesArrayAdapter);
+                                }
                                 Toast.makeText(VaccineDetailsActivity.this, "Old data loaded", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Toast.makeText(VaccineDetailsActivity.this, "Fetching old data failed" + e.getMessage(), Toast.LENGTH_SHORT)

@@ -139,8 +139,8 @@ public class PDFUtil{
         // below line is used to set the name of
         // our PDF file and its path.
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
-        ContextWrapper cw = new ContextWrapper(context);
-        File directory = cw.getExternalFilesDir(null);
+        //File directory = cw.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         //creating new folder instance
         File file = new File(directory
 , "VaccineDetails"+timestamp+".pdf");
