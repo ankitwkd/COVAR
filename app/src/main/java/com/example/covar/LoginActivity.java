@@ -126,7 +126,8 @@ public class LoginActivity extends AppCompatActivity {
         pairs[0] = new Pair<View, String>(image, "logo_image");
         pairs[1] = new Pair<View, String>(loginButton, "login_signup_transition");
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
-        startActivity(dashboardIntent, options.toBundle());
+        //startActivity(dashboardIntent, options.toBundle());
+        startActivity(dashboardIntent);
     }
 
     private void hideActionBars() {
