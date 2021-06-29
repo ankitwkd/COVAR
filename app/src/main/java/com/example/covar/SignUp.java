@@ -114,9 +114,7 @@ public class SignUp extends AppCompatActivity {
         //Make it a valid email address
         username = username.concat(getString(R.string.domain_name));
         String password = editPassword.getText().toString();
-        if(!saveUserDetails()){
-            return;
-        }
+
         mAuth.createUserWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -138,6 +136,9 @@ public class SignUp extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if(user!=null) {
+            if(!saveUserDetails()){
+                return;
+            }
             Toast.makeText(context, "Sign up successful", Toast.LENGTH_SHORT)
                     .show();
             //TODO fill username automatically by passing username here.
