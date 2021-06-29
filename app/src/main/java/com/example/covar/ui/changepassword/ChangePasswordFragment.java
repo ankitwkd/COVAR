@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.covar.R;
@@ -32,6 +33,8 @@ public class ChangePasswordFragment extends Fragment {
 
     //Firebase authentication
     private FirebaseAuth mAuth;
+    public Toolbar mToolbar;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void changePassword(View root) {
-        if(!validator.validate()){
+        if (!validator.validate()) {
             return;
         }
         String oldPassword = editOldPassword.getText().toString();
@@ -80,21 +83,24 @@ public class ChangePasswordFragment extends Fragment {
                         if (task.isSuccessful()) {
                             user.updatePassword(newPassword)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "Password updated");
-                                        Toast.makeText(getActivity(), R.string.pwd_updated,
-                                                Toast.LENGTH_SHORT)
-                                                .show();
-                                        getActivity().getSupportFragmentManager().popBackStackImmediate();
-                                    } else {
-                                        Toast.makeText(getActivity(), task.getException()
-                                                .getMessage(), Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, "Error password not updated");
-                                    }
-                                }
-                            });
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "Password updated");
+                                                Toast.makeText(getActivity(), R.string.pwd_updated,
+                                                        Toast.LENGTH_SHORT)
+                                                        .show();
+                                                getActivity().getSupportFragmentManager().popBackStackImmediate();
+                                                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                                                toolbar.setTitle("Home");
+
+                                            } else {
+                                                Toast.makeText(getActivity(), task.getException()
+                                                        .getMessage(), Toast.LENGTH_SHORT).show();
+                                                Log.d(TAG, "Error password not updated");
+                                            }
+                                        }
+                                    });
                         } else {
                             Toast.makeText(getActivity(), "Old password entered wrongly",
                                     Toast.LENGTH_SHORT).show();

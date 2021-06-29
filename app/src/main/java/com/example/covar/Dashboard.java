@@ -7,6 +7,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -23,9 +24,11 @@ public class Dashboard extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityDashboardBinding binding;
     private TextView tvUsername;
+    Toolbar toolbar;
 
     //Firebase authentication
     private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,6 @@ public class Dashboard extends AppCompatActivity {
         setStatusBarColor();
 
         binding = ActivityDashboardBinding.inflate(getLayoutInflater());
-
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

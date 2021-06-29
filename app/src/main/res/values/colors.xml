@@ -10,4 +10,6 @@
     <color name="app_blue">#3398cc</color>
     <color name="app_orange">#ee8114</color>
     <color name="status_bar">#a35403</color>
+    #696969
+    <color name="app_gray">#696969</color>
 </resources>

@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,8 +56,6 @@ public class HomeFragment extends Fragment {
     private ArrayList<String> pdfText;
 
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -72,7 +69,7 @@ public class HomeFragment extends Fragment {
 
         currUser = mAuth.getCurrentUser();
 
-        download.setOnClickListener(this :: downloadAsPDF);
+        download.setOnClickListener(this::downloadAsPDF);
         pdfText = new ArrayList<String>();
         return root;
     }
@@ -102,9 +99,9 @@ public class HomeFragment extends Fragment {
         } else {
             pdfUtil.requestPermission();
         }
-        if(pdfUtil.generatePDF()){
+        if (pdfUtil.generatePDF()) {
             Toast.makeText(getActivity(), "PDF file saved to Downloads", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             Toast.makeText(getActivity(), "Could not generate pdf file", Toast.LENGTH_SHORT).show();
         }
     }
@@ -123,23 +120,22 @@ public class HomeFragment extends Fragment {
                                     .getMessage(), Toast.LENGTH_SHORT)
                                     .show();
                             Log.e("firebase", "Error getting data", task.getException());
-                        }
-                        else {
+                        } else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             user = task.getResult().getValue(User.class);
-                            fullName.setText(user.getFullName().toUpperCase());
+                            fullName.setText(user.getFullName().toUpperCase() + ",");
                             firstDose.setText("1st dose received:  NA");
                             secondDose.setText("2nd dose received: NA");
                             String display_text = "";
                             Date vaccineDate1 = null, vaccineDate2 = null;
-                            if(user.getVaccinationDate1()!=null) {
+                            if (user.getVaccinationDate1() != null) {
                                 vaccineDate1 = new Date(user.getVaccinationDate1());
                             }
-                            if(user.getVaccinationDate2()!=null) {
+                            if (user.getVaccinationDate2() != null) {
                                 vaccineDate2 = new Date(user.getVaccinationDate2());
                             }
 
-                            if(vaccineDate1 != null && vaccineDate2 == null) {
+                            if (vaccineDate1 != null && vaccineDate2 == null) {
                                 display_text += "You took your first dose on ";
                                 display_text += user.getVaccinationDate1() + "\n";
                                 firstDose.setText("1st dose received: " + user.getVaccinationDate1());
@@ -150,7 +146,7 @@ public class HomeFragment extends Fragment {
                                 display_text += new SimpleDateFormat("d MMMM yyyy").format(c.getTime()) + "\n";
                                 secondDose.setText("Tentative second dose date: " + new SimpleDateFormat("d MMMM yyyy").format(c.getTime()));
                                 msg.setText("Thank you for completing your COVID-19 vaccine.\nYour second dose is still due.");
-                            }else if(vaccineDate1 != null && vaccineDate2 != null){
+                            } else if (vaccineDate1 != null && vaccineDate2 != null) {
                                 fillUpButton.setVisibility(View.GONE);
                                 display_text += "You took your first dose on ";
                                 display_text += user.getVaccinationDate1() + "\n";
@@ -160,7 +156,7 @@ public class HomeFragment extends Fragment {
                                 secondDose.setText("2nd dose received: " + user.getVaccinationDate2());
                                 msg.setText("Thank you for completing your COVID-19 vaccine.");
 
-                            }else if(vaccineDate1 == null && vaccineDate2 == null){
+                            } else if (vaccineDate1 == null && vaccineDate2 == null) {
                                 display_text += "As per records, you have not taken vaccine.\nPlease fill the form.";
                                 msg.setText(display_text);
                             }

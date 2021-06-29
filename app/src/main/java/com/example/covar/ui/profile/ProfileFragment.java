@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.covar.R;
@@ -69,22 +70,21 @@ public class ProfileFragment extends Fragment {
         String username = currUser.getEmail().split("@")[0];
         mDatabase.child("users").child(username).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Error loading data" + task.getException()
-                            .getMessage(), Toast.LENGTH_SHORT)
-                            .show();
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                    user = task.getResult().getValue(User.class);
-                    editMobileNum.setText(user.getMobileNum());
-                    editAge.setText(user.getAge());
-                }
-            }
-        });
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Error loading data" + task.getException()
+                                    .getMessage(), Toast.LENGTH_SHORT)
+                                    .show();
+                            Log.e("firebase", "Error getting data", task.getException());
+                        } else {
+                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                            user = task.getResult().getValue(User.class);
+                            editMobileNum.setText(user.getMobileNum());
+                            editAge.setText(user.getAge());
+                        }
+                    }
+                });
 
     }
 
@@ -101,7 +101,7 @@ public class ProfileFragment extends Fragment {
 
     private void updateProfile(View view) {
         try {
-            if(!validator.validate()){
+            if (!validator.validate()) {
                 return;
             }
             String newMobileNum = editMobileNum.getText().toString();
@@ -114,6 +114,8 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(getActivity(), "Profile updated successfully", Toast.LENGTH_SHORT)
                     .show();
             getActivity().getSupportFragmentManager().popBackStackImmediate();
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setTitle("Home");
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Profile update failed | " + e.getMessage(),
                     Toast.LENGTH_SHORT).show();
