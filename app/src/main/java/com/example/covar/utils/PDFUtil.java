@@ -12,6 +12,8 @@ import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
 import android.widget.Toast;
+import android.content.Intent;
+
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -121,7 +123,6 @@ public class PDFUtil{
         canvas.drawText("Name: " + user.getFullName(), xPos, 560, title);
 
 
-
         canvas.drawText("Age: " + user.getAge(), xPos, 580, title);
         canvas.drawText("Mobile: " + user.getMobileNum(), xPos, 600, title);
 
@@ -149,8 +150,11 @@ public class PDFUtil{
         // below line is used to set the name of
         // our PDF file and its path.
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
-        //File directory = cw.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File directory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        //File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+        if (!directory.exists()){
+            directory.mkdirs();
+        }
         //creating new folder instance
         File file = new File(directory
 , "VaccineDetails"+timestamp+".pdf");
@@ -186,5 +190,13 @@ public class PDFUtil{
     public void requestPermission() {
         // requesting permissions if not provided.
         ActivityCompat.requestPermissions((Activity)context, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+    private void createPdf(Activity a) {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        intent.putExtra(Intent.EXTRA_TITLE, "xyz");
+        //a.startActivityForResult(intent, EXPORT_PDF_REQUEST_CODE);
     }
 }
