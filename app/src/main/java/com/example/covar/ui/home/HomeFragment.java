@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
 
     private void collectData() {
         String username = currUser.getEmail().split("@")[0];
-        cardView.setVisibility(getView().GONE);
+        cardView.setVisibility(getView().INVISIBLE);
         //progressBar.setVisibility(getView().VISIBLE);
         mDatabase.child("users").child(username).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -145,16 +145,16 @@ public class HomeFragment extends Fragment {
                                 c.add(Calendar.DATE, 30);
                                 display_text += new SimpleDateFormat("d MMMM yyyy").format(c.getTime()) + "\n";
                                 secondDose.setText("Tentative second dose date: " + new SimpleDateFormat("d MMMM yyyy").format(c.getTime()));
-                                msg.setText("Thank you for completing your COVID-19 vaccine.\nYour second dose is still due.");
+                                msg.setText("Thank you for completing your COVID-19\nvaccine. Your second dose is still due.");
                             } else if (vaccineDate1 != null && vaccineDate2 != null) {
-                                fillUpButton.setVisibility(View.GONE);
+                                fillUpButton.setVisibility(View.INVISIBLE);
                                 display_text += "You took your first dose on ";
                                 display_text += user.getVaccinationDate1() + "\n";
                                 firstDose.setText("1st dose received: " + user.getVaccinationDate1());
                                 display_text += "You took your second dose on ";
                                 display_text += user.getVaccinationDate2() + "\n";
                                 secondDose.setText("2nd dose received: " + user.getVaccinationDate2());
-                                msg.setText("Thank you for completing your COVID-19 vaccine.");
+                                msg.setText("Thank you for completing your COVID-19\nvaccine.");
 
                             } else if (vaccineDate1 == null && vaccineDate2 == null) {
                                 display_text += "As per records, you have not taken vaccine.\nPlease fill the form.";

@@ -155,6 +155,14 @@ public class VaccineDetailsActivity extends AppCompatActivity {
     public void saveVaccineDetails(View view) {
         try {
             String username = currUser.getEmail().split("@")[0];
+            String vaccineName = vaccineDropdown.getText().toString();
+            String doseNumber = doseDropdown.getText().toString();
+            String dateString = dateLayout.getText().toString();
+            if(vaccineName.isEmpty() || doseNumber.isEmpty() || dateString.isEmpty()){
+                Toast.makeText(this, "All fields are mandatory", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
             user.setVaccineName(vaccineDropdown.getText().toString());
             user.setDose(doseDropdown.getText().toString());
             if(user.getDose().equalsIgnoreCase("1")) {

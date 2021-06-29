@@ -35,7 +35,7 @@
         android:text="COVID-19 Vaccination Portal"
         android:textAlignment="center"
         android:textColor="@color/app_orange"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintTop_toBottomOf="@+id/logoImage"
@@ -45,20 +45,14 @@
         android:id="@+id/card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:maxWidth="300dp"
-        android:padding="10dp"
-        android:visibility="gone"
+        android:gravity="center_vertical"
         app:cardBackgroundColor="#50ADD8E6"
-        app:cardCornerRadius="10dp"
-
-        app:layout_constraintBottom_toTopOf="@+id/btnFillUp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeUser">
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <LinearLayout
@@ -87,7 +81,7 @@
                 android:padding="20dp"
                 android:text=""
                 android:textColor="@color/app_gray"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/firstdose"
@@ -100,7 +94,7 @@
                 android:paddingBottom="5dp"
                 android:text=""
                 android:textColor="@color/app_gray"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/seconddose"
@@ -113,7 +107,7 @@
                 android:paddingBottom="20dp"
                 android:text=""
                 android:textColor="@color/app_gray"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -126,8 +120,6 @@
         android:backgroundTint="@color/app_orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_baseline_arrow_downward_24"
         app:tint="@null" />
 
@@ -135,6 +127,7 @@
         android:id="@+id/btnFillUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="116dp"
         android:backgroundTint="@color/app_orange"
         android:text="Fill vaccine form"
@@ -142,6 +135,7 @@
 
         android:transitionName="login_signup_transition"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
