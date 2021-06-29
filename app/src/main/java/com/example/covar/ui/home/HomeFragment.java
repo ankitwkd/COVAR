@@ -1,6 +1,7 @@
 package com.example.covar.ui.home;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +55,10 @@ public class HomeFragment extends Fragment {
     private User user;
 
     private ArrayList<String> pdfText;
+    PDFUtil pdfUtil;
+
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -70,6 +75,7 @@ public class HomeFragment extends Fragment {
         currUser = mAuth.getCurrentUser();
 
         download.setOnClickListener(this::downloadAsPDF);
+
         pdfText = new ArrayList<String>();
         return root;
     }
@@ -93,12 +99,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void downloadAsPDF(View view) {
-        PDFUtil pdfUtil = new PDFUtil(getResources(), R.drawable.vaccine_splash_logo, user, R.color.app_blue, getActivity(), pdfText);
-        if (pdfUtil.checkPermission()) {
-            Toast.makeText(getActivity(), "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            pdfUtil.requestPermission();
-        }
         if (pdfUtil.generatePDF()) {
             Toast.makeText(getActivity(), "PDF file saved to Downloads", Toast.LENGTH_SHORT).show();
         } else {
@@ -166,6 +166,12 @@ public class HomeFragment extends Fragment {
                             pdfText.add(firstDose.getText().toString());
                             pdfText.add(secondDose.getText().toString());
                             cardView.setVisibility(getView().VISIBLE);
+                            pdfUtil = new PDFUtil(getResources(), R.drawable.vaccine_splash_logo, user, R.color.app_blue, getActivity(), pdfText);
+                            if (pdfUtil.checkPermission()) {
+                                //Toast.makeText(getActivity(), "Permission Granted", Toast.LENGTH_SHORT).show();
+                            } else {
+                                pdfUtil.requestPermission();
+                            }
                             //tvHome.setText(display_text);
                         }
                     }
@@ -177,6 +183,25 @@ public class HomeFragment extends Fragment {
         Intent vaccineActivity = new Intent(getActivity(), VaccineDetailsActivity.class);
         startActivity(vaccineActivity);
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+
+                // after requesting permissions we are showing
+                // users a toast message of permission granted.
+                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (writeStorage && readStorage) {
+                    Toast.makeText(getActivity(), "Permission Granted..", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Permission Denied.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
 }
