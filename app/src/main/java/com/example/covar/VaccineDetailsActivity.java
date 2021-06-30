@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,6 +28,7 @@ import com.example.covar.data.User;
 import com.example.covar.utils.ReminderBroadcast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,7 +91,9 @@ public class VaccineDetailsActivity extends AppCompatActivity {
         dosesArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, doses);
         doseDropdown.setAdapter(dosesArrayAdapter);
         //VACCINE DATE
-        MaterialDatePicker datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("VACCINATION DATE").build();
+        MaterialDatePicker datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("VACCINATION DATE")
+                .build();
 
         dateLayout = findViewById(R.id.date_selector);
         dateLayout.setOnFocusChangeListener((x, hasFocus) -> {
@@ -164,6 +169,20 @@ public class VaccineDetailsActivity extends AppCompatActivity {
                 Toast.makeText(this, "All fields are mandatory", Toast.LENGTH_SHORT)
                         .show();
                 return;
+            }
+            if(user.getVaccineName()!=null && !vaccineName.equalsIgnoreCase(user.getVaccineName())){
+                Toast.makeText(this, "Please choose same vaccine as that of first dose", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            if(user.getVaccinationDate1()!=null){
+                Date date1 = new Date(user.getVaccinationDate1());
+                Date date2 = new Date(dateString);
+                if(date2.compareTo(date1)<=0){
+                    Toast.makeText(this, "Please choose a date after vaccine first dose", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
             }
             user.setVaccineName(vaccineDropdown.getText().toString());
             user.setDose(doseDropdown.getText().toString());
@@ -253,4 +272,5 @@ public class VaccineDetailsActivity extends AppCompatActivity {
             }
         }
     }
+
 }
