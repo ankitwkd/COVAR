@@ -20,11 +20,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
 
+    private static final int TIMEOUT = 3000;
     private Animation topAnim, bottomAnim;
     private ImageView splashIcon;
     private TextView txtAppName, txtAppMotto;
-
-    private static int TIMEOUT = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +59,9 @@ public class SplashActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user!=null){
+        if (user != null) {
             intent = new Intent(getApplicationContext(), Dashboard.class);
-        }else{
+        } else {
             intent = new Intent(getApplicationContext(), LoginActivity.class);
         }
         new Handler().postDelayed(() -> {

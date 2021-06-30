@@ -10,6 +10,13 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.covar.R;
 
 public class ReminderBroadcast extends BroadcastReceiver {
+
+    /**
+     * Method to trigger the notification for the 2nd dose. It receives the date for 2nd dose
+     * from VaccineDetailsActivity on filling up of form for 1st dose.
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         String vaccineDate2 = intent.getStringExtra("vaccineDate2");

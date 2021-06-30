@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -40,24 +41,19 @@ import java.util.Date;
 
 public class VaccineDetailsActivity extends AppCompatActivity {
 
-    private AutoCompleteTextView vaccineDropdown;
+    private static final int PERMISSION_REQUEST_CODE = 200;
     ArrayList<String> vaccineNames = new ArrayList<>();
-    private AutoCompleteTextView doseDropdown;
     ArrayList<String> doses = new ArrayList<>();
     ArrayAdapter<String> dosesArrayAdapter;
-
-    private TextInputEditText dateLayout;
-
-    //Firebase database
-    private DatabaseReference mDatabase;
-
-    //Firebase authentication
-    private FirebaseAuth mAuth;
-
     FirebaseUser currUser;
     User user;
-
-    private static final int PERMISSION_REQUEST_CODE = 200;
+    private AutoCompleteTextView vaccineDropdown;
+    private AutoCompleteTextView doseDropdown;
+    private TextInputEditText dateLayout;
+    //Firebase database
+    private DatabaseReference mDatabase;
+    //Firebase authentication
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +118,9 @@ public class VaccineDetailsActivity extends AppCompatActivity {
         actionBar.hide();
     }
 
+    /**
+     * Method to load data of current user for user-linking/validation purpose.
+     */
     private void fillOldData() {
         String username = currUser.getEmail().split("@")[0];
         mDatabase.child("users").child(username).get()
@@ -137,12 +136,11 @@ public class VaccineDetailsActivity extends AppCompatActivity {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             try {
                                 user = task.getResult().getValue(User.class);
-                                if(user.getVaccinationDate1()!=null){
+                                if (user.getVaccinationDate1() != null) {
                                     dosesArrayAdapter.remove("1");
                                     dosesArrayAdapter.add("2");
                                     doseDropdown.setAdapter(dosesArrayAdapter);
                                 }
-                                Toast.makeText(VaccineDetailsActivity.this, "Old data loaded", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Toast.makeText(VaccineDetailsActivity.this, "Fetching old data failed" + e.getMessage(), Toast.LENGTH_SHORT)
                                         .show();
@@ -152,23 +150,27 @@ public class VaccineDetailsActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Method to update the vaccination details of user in firebase real-time database
+     * @param view
+     */
     public void saveVaccineDetails(View view) {
         try {
             String username = currUser.getEmail().split("@")[0];
             String vaccineName = vaccineDropdown.getText().toString();
             String doseNumber = doseDropdown.getText().toString();
             String dateString = dateLayout.getText().toString();
-            if(vaccineName.isEmpty() || doseNumber.isEmpty() || dateString.isEmpty()){
+            if (vaccineName.isEmpty() || doseNumber.isEmpty() || dateString.isEmpty()) {
                 Toast.makeText(this, "All fields are mandatory", Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
             user.setVaccineName(vaccineDropdown.getText().toString());
             user.setDose(doseDropdown.getText().toString());
-            if(user.getDose().equalsIgnoreCase("1")) {
+            if (user.getDose().equalsIgnoreCase("1")) {
                 user.setVaccinationDate1(dateLayout.getText().toString());
                 setReminder(user.getVaccinationDate1());
-            }else if(user.getDose().equalsIgnoreCase("2")){
+            } else if (user.getDose().equalsIgnoreCase("2")) {
                 user.setVaccinationDate2(dateLayout.getText().toString());
             }
             mDatabase.child("users").child(username).setValue(user);
@@ -181,6 +183,10 @@ public class VaccineDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method to set reminder for tentative date for second dose.
+     * @param vaccinationDate1
+     */
     private void setReminder(String vaccinationDate1) {
         try {
             Calendar c = Calendar.getInstance();
@@ -192,7 +198,7 @@ public class VaccineDetailsActivity extends AppCompatActivity {
             intent.putExtra("vaccineDate2", vaccineDate2);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-            AlarmManager alarmManager = (AlarmManager)getSystemService(this.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
             long timeAtButtonClick = System.currentTimeMillis();
 
@@ -205,20 +211,29 @@ public class VaccineDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void createNotificationChannel(){
+    /**
+     * Method to create notification channel so as to receive the notification for 2nd dose.
+     */
+    private void createNotificationChannel() {
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "ReminderChannel";
             String description = "Hello channel";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("notifyAnkit", name, importance);
             channel.setDescription(description);
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
+    /**
+     * Method to confirm the approval of permissions required to read/write storage.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

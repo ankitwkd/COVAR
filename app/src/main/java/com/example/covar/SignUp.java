@@ -15,18 +15,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.example.covar.data.User;
 import com.example.covar.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.common.collect.Range;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -68,15 +63,14 @@ public class SignUp extends AppCompatActivity {
         editMobileNum = findViewById(R.id.mobileNumber);
 
         //Initialize layouts
-        layoutFullName  = findViewById(R.id.fullNameLayout);
-        layoutUsername  = findViewById(R.id.usernameLayout);
-        layoutPassword  = findViewById(R.id.passwordLayout);
-        layoutAge       = findViewById(R.id.ageLayout);
+        layoutFullName = findViewById(R.id.fullNameLayout);
+        layoutUsername = findViewById(R.id.usernameLayout);
+        layoutPassword = findViewById(R.id.passwordLayout);
+        layoutAge = findViewById(R.id.ageLayout);
         layoutMobileNum = findViewById(R.id.mobileNumberLayout);
 
         //Adding validators
         validator = new Validator(this);
-        //validator.setStyle(R.style.orangeError);
         validator.addValidation(layoutFullName, "[a-zA-Z\\s]+", "Only letters and spaces allowed");
         validator.addValidation(layoutUsername, "[A-Za-z0-9]+", "Only letters and numbers allowed");
         validator.addValidation(layoutPassword, getString(R.string.regex_password), getString(R.string.err_invalid_password));
@@ -104,8 +98,13 @@ public class SignUp extends AppCompatActivity {
         actionBar.hide();
     }
 
+    /**
+     * Method triggered on click of signup. It updates the database with entered information
+     * and creates credentials for login
+     * @param view
+     */
     public void signUp(View view) {
-        if(!validator.validate()){
+        if (!validator.validate()) {
             Toast.makeText(this, "Please fix highlighted errors", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -134,9 +133,13 @@ public class SignUp extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Method to sign up and navigate to login activity.
+     * @param user
+     */
     private void updateUI(FirebaseUser user) {
-        if(user!=null) {
-            if(!saveUserDetails()){
+        if (user != null) {
+            if (!saveUserDetails()) {
                 return;
             }
             Toast.makeText(context, "Sign up successful", Toast.LENGTH_SHORT)
@@ -144,12 +147,17 @@ public class SignUp extends AppCompatActivity {
             //TODO fill username automatically by passing username here.
             Intent intent = new Intent(context, LoginActivity.class);
             startActivity(intent);
-        }else{
+        } else {
             Toast.makeText(context, "Sign up failed | Please retry", Toast.LENGTH_SHORT)
                     .show();
         }
     }
 
+    /**
+     * Method to save the entered information to firebase real-time database mapped to username
+     * created in the process.
+     * @return
+     */
     private boolean saveUserDetails() {
         try {
             String username = editUsername.getText().toString().toLowerCase();

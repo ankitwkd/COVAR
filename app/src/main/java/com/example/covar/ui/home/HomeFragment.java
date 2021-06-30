@@ -35,31 +35,22 @@ import java.util.Date;
 
 public class HomeFragment extends Fragment {
 
+    //Requesting permissions with 200 code, so that we can check if user approved them.
+    private static final int PERMISSION_REQUEST_CODE = 200;
+    PDFUtil pdfUtil;
     private Button fillUpButton;
     private FloatingActionButton download;
-    private FloatingActionButton reminder;
     private TextView tvHome;
-
     private TextView fullName, msg, firstDose, secondDose;
     private CardView cardView;
-
     //Firebase database
     private DatabaseReference mDatabase;
-
     //Firebase authentication
     private FirebaseAuth mAuth;
-
     //Firebase current user
     private FirebaseUser currUser;
-
     private User user;
-
     private ArrayList<String> pdfText;
-    PDFUtil pdfUtil;
-
-    private static final int PERMISSION_REQUEST_CODE = 200;
-
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -73,9 +64,7 @@ public class HomeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         currUser = mAuth.getCurrentUser();
-
         download.setOnClickListener(this::downloadAsPDF);
-
         pdfText = new ArrayList<String>();
         return root;
     }
@@ -86,6 +75,11 @@ public class HomeFragment extends Fragment {
         collectData();
     }
 
+    /**
+     * Method to wire all the components to the fragment view.
+     *
+     * @param view
+     */
     private void wireUI(View view) {
         fillUpButton = view.findViewById(R.id.btnFillUp);
         fillUpButton.setOnClickListener(this::fillUpOnClickListener);
@@ -98,6 +92,12 @@ public class HomeFragment extends Fragment {
         cardView = view.findViewById(R.id.card_view);
     }
 
+    /**
+     * Method triggered on click of download FAB button. It triggers the download
+     * of all the details as pdf into the internal storage.
+     *
+     * @param view
+     */
     private void downloadAsPDF(View view) {
         if (pdfUtil.generatePDF()) {
             Toast.makeText(getActivity(), "PDF file saved to Downloads", Toast.LENGTH_SHORT).show();
@@ -106,6 +106,10 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to fetch all the updated details of the user to display in the dashboard
+     * and initialize the user object used throughout the code for validation.
+     */
 
     private void collectData() {
         String username = currUser.getEmail().split("@")[0];
@@ -179,12 +183,21 @@ public class HomeFragment extends Fragment {
 
     }
 
+    /**
+     * Method triggered on click of fill up form button.
+     * @param view
+     */
     private void fillUpOnClickListener(View view) {
         Intent vaccineActivity = new Intent(getActivity(), VaccineDetailsActivity.class);
         startActivity(vaccineActivity);
-
     }
 
+    /**
+     * Method to check if the permissions asked were accepted.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {

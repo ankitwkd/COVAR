@@ -58,14 +58,19 @@ public class ProfileFragment extends Fragment {
         currUser = mAuth.getCurrentUser();
 
         validator = new Validator(getActivity());
-        validator.addValidation(mobileNumLayout, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$", "Expected: 000-000-0000");
-        validator.addValidation(ageLayout, "^(?:[1-9][0-9]?|1[01][0-9]|120)$", "Age(1-120)");
+        validator.addValidation(mobileNumLayout, "^[0-9]{3}-[0-9]{3}-[0-9]{4}$",
+                "Expected: 000-000-0000");
+        validator.addValidation(ageLayout, "^(?:[1-9][0-9]?|1[01][0-9]|120)$",
+                "Age(1-120)");
 
         fillOldData();
 
         return root;
     }
 
+    /**
+     * Method to pre-set the fields with existing data of user.
+     */
     private void fillOldData() {
         String username = currUser.getEmail().split("@")[0];
         mDatabase.child("users").child(username).get()
@@ -73,8 +78,8 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Error loading data" + task.getException()
-                                    .getMessage(), Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(), "Error loading data" +
+                                    task.getException().getMessage(), Toast.LENGTH_SHORT)
                                     .show();
                             Log.e("firebase", "Error getting data", task.getException());
                         } else {
@@ -88,6 +93,10 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    /**
+     * Method to wire the UI components to the layout view.
+     * @param root
+     */
     private void wireUI(View root) {
         editMobileNum = root.findViewById(R.id.mobileNumber);
         editAge = root.findViewById(R.id.age);
@@ -99,6 +108,10 @@ public class ProfileFragment extends Fragment {
         btnUpdateProf.setOnClickListener(this::updateProfile);
     }
 
+    /**
+     * Method to update the newly entered details into the database and update the dashboard.
+     * @param view
+     */
     private void updateProfile(View view) {
         try {
             if (!validator.validate()) {

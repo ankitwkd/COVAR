@@ -48,8 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         wiringUIControls();
         hideActionBars();
         setStatusBarColor();
-
-
     }
 
     @Override
@@ -70,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(this::loginClickListener);
         signUpButton = findViewById(R.id.signupBtn);
         signUpButton.setOnClickListener(this::signUpClickListener);
-
         image = findViewById(R.id.logoImage);
         welcomeText = findViewById(R.id.logo_name);
         editUsername = findViewById(R.id.username);
@@ -80,14 +77,19 @@ public class LoginActivity extends AppCompatActivity {
     private void loginClickListener(View view) {
         String username = editUsername.getText().toString().concat(getString(R.string.domain_name));
         String password = editPassword.getText().toString();
-        if(username.isEmpty() || password.isEmpty()){
+        if (username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Username and password fields cannot be empty",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        validateLogin(username,password);
+        validateLogin(username, password);
     }
 
+    /**
+     * Method to validate login with email and password through firebase
+     * @param username
+     * @param password
+     */
     private void validateLogin(String username, String password) {
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -107,18 +109,26 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Method to update dashboard if login is successful.
+     * @param user
+     */
     private void updateUI(FirebaseUser user) {
-        if(user!=null) {
+        if (user != null) {
             Toast.makeText(this, "Log in successful", Toast.LENGTH_SHORT)
                     .show();
             navigateNext();
-        }else{
-            Toast.makeText(this, "Authentication failed | Incorrect credentials", Toast.LENGTH_SHORT)
+        } else {
+            Toast.makeText(this, "Authentication failed | Incorrect credentials",
+                    Toast.LENGTH_SHORT)
                     .show();
             editPassword.getText().clear();
         }
     }
 
+    /**
+     * Method to transition to dashboard screen.
+     */
     private void navigateNext() {
         Intent dashboardIntent = new Intent(getApplicationContext(), Dashboard.class);
 
@@ -134,6 +144,10 @@ public class LoginActivity extends AppCompatActivity {
         actionBar.hide();
     }
 
+    /**
+     * Method in case user wants to sign up.
+     * @param view
+     */
     private void signUpClickListener(View view) {
         Intent signUpIntent = new Intent(getApplicationContext(), SignUp.class);
 

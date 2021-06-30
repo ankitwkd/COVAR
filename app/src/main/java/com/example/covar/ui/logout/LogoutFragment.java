@@ -28,7 +28,7 @@ public class LogoutFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_logout, container, false);
         final TextView textView = root.findViewById(R.id.text_logout);
         logout = root.findViewById(R.id.fabLogout);
-        logout.setOnClickListener(this :: logout);
+        logout.setOnClickListener(this::logout);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

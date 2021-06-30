@@ -1,5 +1,9 @@
 package com.example.covar.data;
 
+/**
+ * POJO Class for storing user details in Firebase real-timedatabase
+ * Every field has getters and setters defined in order to access them.
+ */
 public class User {
     private String fullName;
     private String age;
@@ -7,7 +11,6 @@ public class User {
     private String vaccineName;
     private String dose;
     private String vaccinationDate1;
-
     private String vaccinationDate2;
 
     public String getVaccineName() {

@@ -1,7 +1,8 @@
 package com.example.covar.utils;
+
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,8 +13,6 @@ import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
 import android.widget.Toast;
-import android.content.Intent;
-
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,24 +29,21 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 //https://www.geeksforgeeks.org/how-to-generate-a-pdf-file-in-android-app/
-public class PDFUtil{
+public class PDFUtil {
 
+    // constant code for runtime permissions
+    private static final int PERMISSION_REQUEST_CODE = 200;
     // declaring width and height
     // for our PDF file.
     int pageHeight = 1120;
     int pagewidth = 792;
-
     // creating a bitmap variable
     // for storing our images
     Bitmap bmp, scaledbmp;
-
     User user;
     int blue;
     Context context;
-
-    // constant code for runtime permissions
-    private static final int PERMISSION_REQUEST_CODE = 200;
-    private ArrayList<String> pdfText;
+    private final ArrayList<String> pdfText;
 
     public PDFUtil(Resources resources,
                    int image_id, User user, int blue, Context context, ArrayList<String> pdfText) {
@@ -152,12 +148,12 @@ public class PDFUtil{
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
         File directory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         //File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdirs();
         }
         //creating new folder instance
         File file = new File(directory
-, "VaccineDetails"+timestamp+".pdf");
+                , "VaccineDetails" + timestamp + ".pdf");
         Toast.makeText(context, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
         try {
@@ -189,14 +185,6 @@ public class PDFUtil{
 
     public void requestPermission() {
         // requesting permissions if not provided.
-        ActivityCompat.requestPermissions((Activity)context, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-    }
-
-    private void createPdf(Activity a) {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/pdf");
-        intent.putExtra(Intent.EXTRA_TITLE, "xyz");
-        //a.startActivityForResult(intent, EXPORT_PDF_REQUEST_CODE);
+        ActivityCompat.requestPermissions((Activity) context, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
     }
 }

@@ -21,11 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Dashboard extends AppCompatActivity {
 
+    Toolbar toolbar;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityDashboardBinding binding;
     private TextView tvUsername;
-    Toolbar toolbar;
-
     //Firebase authentication
     private FirebaseAuth mAuth;
 
