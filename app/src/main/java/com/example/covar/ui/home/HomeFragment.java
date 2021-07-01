@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment {
                                 c.add(Calendar.DATE, 30);
                                 display_text += new SimpleDateFormat("d MMMM yyyy").format(c.getTime()) + "\n";
                                 secondDose.setText("Tentative second dose date: " + new SimpleDateFormat("d MMMM yyyy").format(c.getTime()));
-                                msg.setText("Thank you for completing your COVID-19\nvaccine. Your second dose is still due.");
+                                msg.setText("Thank you for completing your COVID-19 vaccine. Your second dose is still due.");
                             } else if (vaccineDate1 != null && vaccineDate2 != null) {
                                 fillUpButton.setVisibility(View.INVISIBLE);
                                 display_text += "You took your first dose on ";
