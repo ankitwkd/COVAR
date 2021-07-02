@@ -19,22 +19,29 @@ As soon as an application is launched, a splash screen is displayed and from the
 Once a user logs in, user dashboard appears and from there a user can fill up the vaccine registration form, change password, change profile, or view the help, about pages. User can also logout from the dashboard view which will take him back to the login page.
 Once the vaccine registration form is filled up, a notification is pushed to the user immediately and also before the second vaccine schedule.
 
-**3. External API’s used.(UI and Backend)**
-a. UI.
-  Name: Google’s Material View Library
-  Version: 1.0.0
+**3. External API’s used.(UI and Backend)**  
+a. UI
+
+  Name: *Google’s Material View Library*  
+  Version: 1.0.0  
   Description: Implementing Google’s UI guidelines, available through central api library.
-b. Firebase authentication
-  Name: com.google.firebase:firebase-auth
-  Version: 28.2.0
+  
+b. *Firebase authentication*
+
+  Name: com.google.firebase:firebase-auth  
+  Version: 28.2.0  
   Description: Implementing email‐passsword based authentication throughsingleton class FirebaseAuth
+  
 c. Firebase realtime database
-  Name: com.google.firebase:firebase-database
-  Version: 28.2.0
+
+  Name: *com.google.firebase:firebase-database*  
+  Version: 28.2.0  
   Description: Implementing json‐tree based database through singleton class Firebase DatabaseReference. Using a POJO class for user details.
+  
 d. Awesome validation
-  Name: com.basgeekball:awesome-validation:4.3
-  Version: 4.3
+
+  Name: *com.basgeekball:awesome-validation:4.3*  
+  Version: 4.3  
   Description: Implementing validation checks for fields based on regex checks. Used TextInputLayout version of the provided API for validation.
 
 **4. Features used along with corresponding activities/fragments.**
